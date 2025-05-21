@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aninda Dutta - PhD Student</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Lora', 'serif'], 
+                    },
+                    colors: {
+                        primary: '#1e40af', 
+                        secondary: '#d1d5db', 
+                        accent: '#059669', 
+                        aiFeature: '#5b21b6', 
+                        textDark: '#1f2937', 
+                        textMedium: '#4b5563', 
+                        textLight: '#6b7280', 
+                        bgLight: '#f9fafb', 
+                        bgWhite: '#ffffff',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        #home, #research, #publications, #blog, #cv, #contact { /* Removed #about as it's merged with #home */
+            scroll-margin-top: 4.5rem; 
+        }
+        .academic-hero-bg {
+            background-color: tailwind.theme.colors.bgLight;
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .publication-item {
+            border-left: 3px solid transparent;
+            transition: border-left-color 0.3s ease, background-color 0.3s ease;
+        }
+        .publication-item:hover {
+            border-left-color: tailwind.theme.colors.primary;
+            background-color: #f3f4f6; 
+        }
+        .blog-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-active {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .modal-content {
+            max-height: 80vh;
+        }
+        .loader {
+            border: 4px solid #e5e7eb; 
+            border-top: 4px solid tailwind.theme.colors.primary;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        a {
+            color: tailwind.theme.colors.primary;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        a:hover {
+            color: tailwind.theme.colors.accent;
+            text-decoration: underline;
+        }
+        section h2 { 
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: tailwind.theme.colors.textDark;
+        }
+        section h3 {
+             font-family: 'Inter', sans-serif;
+             font-weight: 600;
+             color: tailwind.theme.colors.primary;
+        }
+        body {
+            color: tailwind.theme.colors.textMedium;
+        }
+    </style>
+</head>
+<body class="bg-bgLight font-sans antialiased">
+
+    <nav id="navbar" class="bg-bgWhite shadow-sm fixed w-full z-50 top-0 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="#home" class="text-xl font-semibold text-primary hover:text-accent">Aninda Dutta</a>
+                </div>
+                <div class="hidden md:flex md:items-center md:space-x-2 lg:space-x-3">
+                    <a href="#home" class="text-textMedium hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="#research" class="text-textMedium hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Research</a>
+                    <a href="#publications" class="text-textMedium hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Publications</a>
+                    <a href="#blog" class="text-textMedium hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Blog</a>
+                    <a href="#cv" class="text-textMedium hover:text-primary px-3 py-2 rounded-md text-sm font-medium">CV</a>
+                    <a href="#contact" class="text-textMedium hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-textMedium hover:text-primary focus:outline-none p-2 rounded-md">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-bgWhite shadow-md rounded-b-md">
+            <a href="#home" class="block text-textMedium hover:bg-secondary hover:text-primary px-4 py-3 text-sm font-medium">Home</a>
+            <a href="#research" class="block text-textMedium hover:bg-secondary hover:text-primary px-4 py-3 text-sm font-medium">Research</a>
+            <a href="#publications" class="block text-textMedium hover:bg-secondary hover:text-primary px-4 py-3 text-sm font-medium">Publications</a>
+            <a href="#blog" class="block text-textMedium hover:bg-secondary hover:text-primary px-4 py-3 text-sm font-medium">Blog</a>
+            <a href="#cv" class="block text-textMedium hover:bg-secondary hover:text-primary px-4 py-3 text-sm font-medium">CV</a>
+            <a href="#contact" class="block text-textMedium hover:bg-secondary hover:text-primary px-4 py-3 text-sm font-medium">Contact</a>
+        </div>
+    </nav>
+
+    <section id="home" class="academic-hero-bg pt-24 pb-16 md:pt-32 md:pb-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:items-center">
+                <div class="md:w-1/3 text-center md:text-left mb-8 md:mb-0">
+                    <img src="https://placehold.co/200x200/60a5fa/ffffff?text=AD" alt="Aninda Dutta" id="heroImage" class="w-40 h-40 md:w-48 md:h-48 rounded-full mx-auto md:mx-0 shadow-md border-4 border-white">
+                </div>
+                <div class="md:w-2/3 md:pl-8 lg:pl-12">
+                    <h1 class="text-3xl sm:text-4xl font-bold text-textDark mb-2" id="heroName">Aninda Dutta</h1>
+                    <p class="text-lg text-primary font-semibold mb-3" id="heroField">Ph.D. candidate in Biophysical Chemistry</p>
+                    <p class="text-md text-textMedium mb-1">Department of Chemistry</p>
+                    <p class="text-md text-textMedium mb-4">University of Virginia</p>
+                    <p class="text-textMedium leading-relaxed mb-4 font-serif" id="heroResearchInterest">
+                        I am a doctoral candidate at the University of Virginia, specializing in Biophysical Chemistry. My current research focuses on the modulation of bacterial rhomboid protease function by membrane lipids using co-evolutionary mechanisms. I am passionate about exploring the world of Cryo-EM and utilizing programming languages like Python for computational tasks in biochemistry and structural biology.
+                    </p>
+                    <div class="flex space-x-3 mb-4">
+                        <a href="mailto:hyq8ne@virginia.edu" class="text-textLight hover:text-primary" title="Email"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg></a>
+                        <a href="#cv" class="text-textLight hover:text-primary" title="CV"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 11-2 0V4H6v12a1 1 0 11-2 0V4zm5 4a1 1 0 100 2h2a1 1 0 100-2H9zm-1 4a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg></a>
+                        <a href="https://scholar.google.com/citations?user=yourprofile" target="_blank" rel="noopener noreferrer" class="text-textLight hover:text-primary" title="Google Scholar">GS</a>
+                        <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" class="text-textLight hover:text-primary" title="GitHub"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 0C4.477 0 0 4.477 0 10c0 4.418 2.865 8.166 6.839 9.49.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.308.678.92.678 1.852 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.003 10.003 0 0020 10c0-5.523-4.477-10-10-10z" clip-rule="evenodd"></path></svg></a>
+                        <a href="https://www.linkedin.com/in/anindadutta86/" target="_blank" rel="noopener noreferrer" class="text-textLight hover:text-primary" title="LinkedIn">LI</a>
+                    </div>
+                     <a href="#contact" class="inline-block bg-accent hover:bg-emerald-700 text-white font-semibold py-2 px-5 rounded-md text-sm transition duration-300">
+                        Contact Me
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <section id="research" class="py-12 fade-in-section">
+            <div class="text-left mb-10"> 
+                <h2 class="text-2xl md:text-3xl font-semibold text-textDark">Research Experience</h2>
+                <hr class="mt-2 mb-6 border-secondary w-16">
+            </div>
+            <div class="space-y-8" id="researchProjectsContainer">
+                <div class="bg-bgWhite p-6 rounded-md shadow-sm research-project">
+                    <h3 class="text-xl font-semibold text-primary mb-1 project-title">Modulation of bacterial rhomboid protease function by membrane lipids using co-evolutionary mechanisms</h3>
+                    <p class="text-sm text-textLight mb-2 project-status">PhD Candidate, University of Virginia (Advisor: Prof. Linda Columbus) | 2023 – Present</p>
+                    <p class="text-textMedium leading-relaxed project-description font-serif">
+                        Currently investigating how membrane lipids influence the function of bacterial rhomboid proteases. This research employs co-evolutionary analysis and various biophysical techniques to understand these complex interactions at a molecular level.
+                    </p>
+                    <div class="mt-3 project-keywords">
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Biophysical Chemistry</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Membrane Proteins</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Rhomboid Protease</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Lipid Interaction</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Co-evolution</span>
+                    </div>
+                    <button onclick="generateResearchQuestions(this)" class="mt-4 bg-aiFeature hover:bg-violet-800 text-white font-medium py-1.5 px-3 rounded-md text-xs transition duration-300">
+                        ✨ Brainstorm Questions
+                    </button>
+                </div>
+
+                <div class="bg-bgWhite p-6 rounded-md shadow-sm research-project">
+                    <h3 class="text-xl font-semibold text-primary mb-1 project-title">Cryo-EM studies of Shigella Phage Sfk20</h3>
+                    <p class="text-sm text-textLight mb-2 project-status">Junior Research Fellow, ICMR-NIRBI, Kolkata, India (Guide: Dr. Moumita Dutta) | Sep 2021 – Mar 2023</p>
+                    <p class="text-textMedium leading-relaxed project-description font-serif">
+                        Standardized sample preparation protocols for Cryo-Electron Microscopy (Cryo-EM) of a newly isolated Shigella Phage Sfk20. Investigated the stability and host interaction of bacteriophages under cryo-conditions using Cryo-EM imaging. Additionally, established a computational pipeline for cryo-electron tomography data processing.
+                    </p>
+                    <div class="mt-3 project-keywords">
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Cryo-EM</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Bacteriophage</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Shigella</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Structural Biology</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Electron Tomography</span>
+                    </div>
+                    <button onclick="generateResearchQuestions(this)" class="mt-4 bg-aiFeature hover:bg-violet-800 text-white font-medium py-1.5 px-3 rounded-md text-xs transition duration-300">
+                        ✨ Brainstorm Questions
+                    </button>
+                </div>
+
+                <div class="bg-bgWhite p-6 rounded-md shadow-sm research-project">
+                    <h3 class="text-xl font-semibold text-primary mb-1 project-title">Role of Elongation Factor-G1 in Mycobacterial Translation</h3>
+                    <p class="text-sm text-textLight mb-2 project-status">Dissertation Student, CSIR-IICB, Kolkata, India (Guide: Dr. Jayati Sengupta) | Jan 2020 – June 2021</p>
+                    <p class="text-textMedium leading-relaxed project-description font-serif">
+                        Successfully purified Msm Elongation factor-G1 (EF-G1), which promotes the translocation step in bacterial protein synthesis. Investigated the role of EF-G1 in bacterial protein synthesis during stress conditions and conducted biochemical studies to observe its binding to the Msm 70S ribosome.
+                    </p>
+                    <div class="mt-3 project-keywords">
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Protein Synthesis</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Elongation Factor</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Mycobacteria</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Ribosome</span>
+                        <span class="text-xs font-medium inline-block py-1 px-2 rounded-sm bg-gray-200 text-textMedium mr-2">Biochemistry</span>
+                    </div>
+                    <button onclick="generateResearchQuestions(this)" class="mt-4 bg-aiFeature hover:bg-violet-800 text-white font-medium py-1.5 px-3 rounded-md text-xs transition duration-300">
+                        ✨ Brainstorm Questions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="publications" class="py-12 fade-in-section">
+            <div class="text-left mb-10">
+                <h2 class="text-2xl md:text-3xl font-semibold text-textDark">Selected Publications</h2>
+                 <hr class="mt-2 mb-6 border-secondary w-16">
+                <p class="text-textMedium mt-1">For a full list, please see my <a href="#cv" class="text-primary hover:underline">CV</a>.</p>
+            </div>
+            <div class="space-y-6" id="publicationsContainer">
+                <div class="bg-bgWhite p-4 rounded-md shadow-sm transition-all duration-300 publication-item">
+                    <h3 class="text-lg font-semibold text-primary mb-0.5 publication-title">Proteomic analysis and protein structure prediction of Shigella phage Sfk20 based on a comparative study using structure prediction approaches.</h3>
+                    <p class="text-sm text-textMedium mb-1 publication-authors">
+                        Mallick, B., <strong>Dutta, A.</strong>, Mondal, P., & Dutta, M. (2024).
+                    </p>
+                    <p class="text-sm text-textLight italic mb-2 publication-details">Proteins, 92(5), 637-648. <a href="https://doi.org/10.1002/prot.26653" target="_blank" rel="noopener" class="text-accent hover:underline">[DOI: 10.1002/prot.26653]</a></p>
+                    <div class="space-x-2">
+                        <a href="path/to/your/publication1.pdf" class="text-xs bg-primary text-white hover:bg-blue-700 py-1 px-2 rounded-sm">[PDF]</a>
+                        <a href="https://doi.org/10.1002/prot.26653" target="_blank" rel="noopener" class="text-xs bg-gray-200 text-textDark hover:bg-gray-300 py-1 px-2 rounded-sm">[Link]</a>
+                        <button onclick="generateHypotheticalAbstract(this)" class="bg-aiFeature hover:bg-violet-800 text-white font-medium py-1 px-2 rounded-sm text-xs transition duration-300">
+                            ✨ Abstract
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-bgWhite p-4 rounded-md shadow-sm transition-all duration-300 publication-item">
+                    <h3 class="text-lg font-semibold text-primary mb-0.5 publication-title">Towards understanding the infection cycle of a newly isolated lytic enteric bacteriophage using cryo-electron microscopy.</h3>
+                    <p class="text-sm text-textMedium mb-1 publication-authors">
+                        <strong>Aninda Dutta</strong>; Bani Mallick; Payel Mondal; Moumita Dutta. (Nov 2022).
+                    </p>
+                    <p class="text-sm text-textLight italic mb-2 publication-details">Poster Presentation at 16th ASCODD (International Conference). Kolkata, India.</p>
+                    <div class="space-x-2">
+                         <a href="path/to/your/poster1.pdf" class="text-xs bg-primary text-white hover:bg-blue-700 py-1 px-2 rounded-sm">[Poster PDF]</a>
+                        <button onclick="generateHypotheticalAbstract(this)" class="bg-aiFeature hover:bg-violet-800 text-white font-medium py-1 px-2 rounded-sm text-xs transition duration-300">
+                            ✨ Abstract
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="blog" class="py-12 fade-in-section">
+            <div class="text-left mb-10">
+                <h2 class="text-2xl md:text-3xl font-semibold text-textDark">Recent Posts</h2>
+                <hr class="mt-2 mb-6 border-secondary w-16">
+                 <p class="text-textMedium mt-1" id="blogUserInterests">Musings on research, Cryo-EM, Python, biophysical chemistry, and academic life.</p>
+                 <button onclick="suggestBlogTopics()" class="mt-3 bg-aiFeature hover:bg-violet-800 text-white font-medium py-1.5 px-3 rounded-md text-xs transition duration-300">
+                    ✨ Suggest Topics
+                </button>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-bgWhite rounded-md shadow-sm overflow-hidden transition-all duration-300 blog-card">
+                    <a href="#"> <img src="https://placehold.co/600x350/a5b4fc/374151?text=Blog+Image+1" alt="Blog Post Image" class="w-full h-40 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x350/cccccc/333333?text=Image+Not+Found';"></a>
+                    <div class="p-5">
+                        <p class="text-xs text-textLight mb-1">Date: May 20, 2025</p>
+                        <h3 class="text-lg font-semibold text-primary mb-2"><a href="#" class="hover:underline">Navigating the World of Cryo-EM Data</a></h3>
+                        <p class="text-textMedium text-sm leading-relaxed mb-3 font-serif">
+                            A brief look into the challenges and triumphs of processing complex Cryo-EM datasets...
+                        </p>
+                        <a href="#" class="text-accent hover:underline font-medium text-sm">Read More &rarr;</a>
+                    </div>
+                </div>
+                 <div class="bg-bgWhite rounded-md shadow-sm overflow-hidden transition-all duration-300 blog-card">
+                    <a href="#"> <img src="https://placehold.co/600x350/818cf8/ffffff?text=Blog+Image+2" alt="Blog Post Image" class="w-full h-40 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x350/cccccc/333333?text=Image+Not+Found';"></a>
+                    <div class="p-5">
+                        <p class="text-xs text-textLight mb-1">Date: May 15, 2025</p>
+                        <h3 class="text-lg font-semibold text-primary mb-2"><a href="#" class="hover:underline">Python in Biophysics: A PhD Perspective</a></h3>
+                        <p class="text-textMedium text-sm leading-relaxed mb-3 font-serif">
+                            Exploring how Python scripting is becoming an indispensable tool in modern biophysical research...
+                        </p>
+                        <a href="#" class="text-accent hover:underline font-medium text-sm">Read More &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cv" class="py-12 text-center fade-in-section bg-bgWhite rounded-md shadow-sm my-10">
+             <div class="text-center mb-6">
+                <h2 class="text-2xl md:text-3xl font-semibold text-textDark">Curriculum Vitae</h2>
+                <hr class="mt-2 mb-4 border-secondary w-16 mx-auto">
+            </div>
+            <p class="text-textMedium mb-6 max-w-md mx-auto">
+                Download my CV for a comprehensive overview of my work and qualifications.
+            </p>
+            <a href="path/to/AnindaDuttaCV_feb2025.pdf" download="AnindaDuttaCV_feb2025.pdf" class="bg-primary hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-md text-sm transition duration-300 inline-flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Download CV (PDF)
+            </a>
+        </section>
+
+        <section id="contact" class="py-12 fade-in-section">
+             <div class="text-center mb-10">
+                <h2 class="text-2xl md:text-3xl font-semibold text-textDark">Contact</h2>
+                <hr class="mt-2 mb-6 border-secondary w-16 mx-auto">
+            </div>
+            <div class="max-w-lg mx-auto bg-bgWhite p-6 sm:p-8 rounded-md shadow-sm">
+                <form id="contactForm" method="POST">
+                    <div class="mb-4">
+                        <label for="name" class="block text-textMedium text-sm font-medium mb-1">Full Name</label>
+                        <input type="text" id="name" name="name" class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-sm" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-textMedium text-sm font-medium mb-1">Email</label>
+                        <input type="email" id="email" name="email" class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-sm" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="subject" class="block text-textMedium text-sm font-medium mb-1">Subject</label>
+                        <input type="text" id="subject" name="subject" class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors text-sm" required>
+                    </div>
+                    <div class="mb-5">
+                        <label for="message" class="block text-textMedium text-sm font-medium mb-1">Message</label>
+                        <textarea id="message" name="message" rows="4" class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors resize-none text-sm" required></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-accent hover:bg-emerald-700 text-white font-semibold py-2.5 px-6 rounded-md text-sm transition duration-300">
+                            Send Message
+                        </button>
+                    </div>
+                     <div id="formMessage" class="mt-4 text-center text-sm"></div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-100 text-textLight py-8 border-t border-gray-200">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-3 flex justify-center space-x-4">
+                <a href="mailto:hyq8ne@virginia.edu" class="hover:text-primary" title="Email"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg></a>
+                <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" class="hover:text-primary" title="GitHub"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 0C4.477 0 0 4.477 0 10c0 4.418 2.865 8.166 6.839 9.49.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.308.678.92.678 1.852 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.003 10.003 0 0020 10c0-5.523-4.477-10-10-10z" clip-rule="evenodd"></path></svg></a>
+                <a href="https://www.linkedin.com/in/anindadutta86/" target="_blank" rel="noopener noreferrer" class="hover:text-primary" title="LinkedIn">LI</a>
+                 <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer" class="hover:text-primary" title="Twitter/X">X</a>
+            </div>
+            <p class="text-xs">&copy; <span id="currentYear"></span> Aninda Dutta. Powered by <a href="https://tailwindcss.com/" class="hover:underline" target="_blank" rel="noopener">Tailwind CSS</a> & Gemini API.</p>
+        </div>
+    </footer>
+
+    <div id="aiModal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden z-[60]">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-60"></div>
+        <div class="modal-container bg-bgWhite w-11/12 md:max-w-xl mx-auto rounded-lg shadow-xl z-50 overflow-y-auto">
+            <div class="modal-content py-4 text-left px-6">
+                <div class="flex justify-between items-center pb-3 border-b border-gray-200">
+                    <p class="text-xl font-semibold text-primary" id="modalTitle">AI Generated Content</p>
+                    <div class="modal-close-button cursor-pointer z-50 p-1 rounded-full hover:bg-gray-200" onclick="closeModal()">
+                        <svg class="fill-current text-textDark" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 18 18">
+                            <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div id="modalBody" class="my-5 min-h-[100px] text-sm text-textMedium leading-relaxed font-serif">
+                    <div class="loader hidden"></div>
+                </div>
+                <div class="flex justify-end pt-2 border-t border-gray-200">
+                    <button onclick="closeModal()" class="px-4 bg-gray-100 hover:bg-gray-200 text-textMedium p-2 rounded-md text-sm">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = ""; 
+        const GENERATIVE_MODEL_TEXT = "gemini-2.0-flash";
+        const modal = document.getElementById('aiModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        
+        function openModal(title = "AI Generated Content") {
+            modalTitle.textContent = title;
+            const existingLoader = modalBody.querySelector('.loader');
+            if (existingLoader) existingLoader.remove();
+            modalBody.innerHTML = '<div class="loader" style="display: block;"></div>';
+            modal.classList.remove('hidden');
+            document.body.classList.add('modal-active');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.classList.remove('modal-active');
+            modalBody.innerHTML = ''; 
+        }
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal.querySelector('.modal-overlay')) {
+                closeModal();
+            }
+        });
+
+        async function callGeminiAPI(promptText) {
+            const currentLoader = modalBody.querySelector('.loader');
+            if (currentLoader) currentLoader.style.display = 'block';
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GENERATIVE_MODEL_TEXT}:generateContent?key=${API_KEY}`;
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: promptText }] }]
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API request failed: ${response.status} ${errorData.error?.message || ''}`);
+                }
+                const result = await response.json();
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error('Unexpected API response structure.');
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                return `<p class="text-red-600">Error: ${error.message}</p>`;
+            }
+        }
+
+        async function generateResearchQuestions(buttonElement) {
+            const projectCard = buttonElement.closest('.research-project');
+            const title = projectCard.querySelector('.project-title').textContent.trim();
+            const description = projectCard.querySelector('.project-description').textContent.trim();
+            
+            openModal(`Brainstorming for: ${title}`);
+            const prompt = `Given a research project titled "${title}" with the description: "${description}", generate 3-5 insightful related research questions or potential future work directions. Present as a numbered list.`;
+            const generatedText = await callGeminiAPI(prompt);
+            modalBody.innerHTML = generatedText.replace(/\n/g, '<br>');
+        }
+
+        async function generateHypotheticalAbstract(buttonElement) {
+            const publicationItem = buttonElement.closest('.publication-item');
+            const title = publicationItem.querySelector('.publication-title').textContent.trim();
+            const authors = publicationItem.querySelector('.publication-authors').textContent.trim();
+
+            openModal(`Generating Abstract for: ${title}`);
+            const prompt = `For a publication titled "${title}" by ${authors}, generate a concise (150-200 words) hypothetical abstract suitable for an academic paper.`;
+            const generatedText = await callGeminiAPI(prompt);
+            modalBody.innerHTML = generatedText.replace(/\n/g, '<br>');
+        }
+
+        async function suggestBlogTopics() {
+            const userFieldElement = document.getElementById('heroField');
+            let userField = "Biophysical Chemistry"; 
+            if (userFieldElement) {
+                const fieldText = userFieldElement.textContent.split(' in ')[1]?.split(' at ')[0];
+                if (fieldText && fieldText.toLowerCase() !== '[your field]') userField = fieldText;
+            }
+            const userInterests = document.getElementById('blogUserInterests')?.textContent || "Cryo-EM, Python, biophysical chemistry";
+            
+            openModal("Suggesting Blog Topics");
+            const prompt = `As a PhD student in ${userField}, with interests in ${userInterests}, suggest 3-5 blog post topics that would be relevant and engaging for an academic audience. Focus on reflections on research, discussions of methodologies, or commentary on recent developments in the field. List them.`;
+            const generatedText = await callGeminiAPI(prompt);
+            modalBody.innerHTML = generatedText.replace(/\n/g, '<br>');
+        }
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navbar = document.getElementById('navbar'); 
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a, #navbar a[href^="#"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                
+                const href = this.getAttribute('href');
+                const targetId = href.substring(1);
+                const targetElement = document.getElementById(targetId);
+
+                if (targetElement) {
+                    navbar.classList.remove('-translate-y-full');
+                    
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+                
+                if (mobileMenu.contains(this) || this.closest('#mobile-menu')) {
+                     mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+        
+        let lastScrollTop = 0;
+        window.onscroll = function() { 
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 50) { 
+                if (scrollTop > lastScrollTop) { 
+                    navbar.classList.add('-translate-y-full'); 
+                } else { 
+                    navbar.classList.remove('-translate-y-full'); 
+                }
+            } else {
+                 navbar.classList.remove('-translate-y-full');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
+        };
+
+        const sections = document.querySelectorAll('.fade-in-section');
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        sections.forEach(section => { observer.observe(section); });
+
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const contactForm = document.getElementById('contactForm');
+        const formMessage = document.getElementById('formMessage');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault(); 
+                formMessage.textContent = 'Thank you! (Demo form message)';
+                formMessage.className = 'mt-4 text-center text-sm text-accent';
+                contactForm.reset();
+                setTimeout(() => { formMessage.textContent = ''; }, 4000);
+            });
+        }
+    </script>
+</body>
+</html>
